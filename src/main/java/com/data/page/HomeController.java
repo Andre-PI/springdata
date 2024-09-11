@@ -1,15 +1,21 @@
 package com.data.page;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.data.page.model.Person;
 import com.data.page.model.PersonRepo;
 
-@Controller
+@RestController
 public class HomeController {
 
     @Autowired
@@ -20,22 +26,20 @@ public class HomeController {
         return "index";
     }
     
-    @RequestMapping("/sign")
-    public String sign(@RequestParam("name") String name, @RequestParam("email") String email) {
+    @PostMapping("/sign")
+    public Person sign(@RequestBody Person person) {
 
-        repo.save(new Person(name,email));
+        return repo.save(person);
         
-        return "index";
     }
     @RequestMapping("/lookfor")
-    public String call(@RequestParam("name") String name, Model m ) {
-        m.addAttribute("gls",repo.findByName(name));
-        return "getall";
+    public List<Person> call(@RequestParam("name") String name) {
+        return repo.findByName(name); 
     }
 
     @RequestMapping("/getall")
-    public String getAll(Model model) {
-        model.addAttribute("gls", repo.findAll().toString());
-        return "getall";
+    public List<Person> getAll() {
+        return repo.findAll();
+
     }
-}
+} 
